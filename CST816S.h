@@ -26,58 +26,71 @@
 #define CST816S_H
 
 #include <Arduino.h>
-#include <Wire.h>  // Include the Wire library
+#include <Wire.h> // Include the Wire library
 
-#define CST816S_ADDRESS     0x15
+#define CST816S_ADDRESS 0x15
 
-enum GESTURE {
-  NONE = 0x00,
-  SWIPE_UP = 0x01,
-  SWIPE_DOWN = 0x02,
-  SWIPE_LEFT = 0x03,
-  SWIPE_RIGHT = 0x04,
-  SINGLE_CLICK = 0x05,
-  DOUBLE_CLICK = 0x0B,
-  LONG_PRESS = 0x0C
+enum GESTURE
+{
+    NONE = 0x00,
+    SWIPE_UP = 0x01,
+    SWIPE_DOWN = 0x02,
+    SWIPE_LEFT = 0x03,
+    SWIPE_RIGHT = 0x04,
+    SINGLE_CLICK = 0x05,
+    DOUBLE_CLICK = 0x0B,
+    LONG_PRESS = 0x0C
 };
 
-struct data_struct {
-  byte gestureID; // Gesture ID
-  byte points;  // Number of touch points
-  byte event; // Event (0 = Down, 1 = Up, 2 = Contact)
-  int x;
-  int y;
-  uint8_t version;
-  uint8_t versionInfo[3];
+struct data_struct
+{
+    uint8_t gestureID; // Gesture ID
+    uint8_t points;    // Number of touch points
+    uint8_t event;     // Event (0 = Down, 1 = Up, 2 = Contact)
+    int x;
+    int y;
+    uint8_t version;
+    uint8_t versionInfo[3];
 };
 
-class CST816S {
-  public:
-    // Added TwoWire reference
-    CST816S(int sda, int scl, int rst, int irq, int orientation, TwoWire &wire = Wire);
-    CST816S(int sda, int scl, int rst, int irq, TwoWire &wire = Wire);
-    void begin(int interrupt = RISING);
-    void sleep();
-    bool available();
-    data_struct data;
-    String gesture();
+class CST816S
+{
+    public:
+        // Added TwoWire reference
+        CST816S(int sda, int scl, int rst, int irq, int rotation, TwoWire &wire = Wire);
+        CST816S(int sda, int scl, int rst, int irq, TwoWire &wire = Wire);
+        void begin(int interrupt = RISING);
+        void enable_double_click();
+        void disable_auto_sleep();
+        void enable_auto_sleep();
+        void set_auto_sleep_time(int seconds);
+        void attachUserInterrupt(std::function<void(void)> callback);
+        void sleep();
+        bool available();
+        data_struct data;
+        String gesture();
 
-    void setOrientation(int orientation);
+        void setRotation(int rotation);
+        void setSize(int w, int h);
 
-  private:
-    int _sda;
-    int _scl;
-    int _rst;
-    int _irq;
-    bool _event_available;
-    int _orientation;
-    TwoWire &_wire;  // Add a reference to a TwoWire object
+    private:
+        int _sda;
+        int _scl;
+        int _rst;
+        int _irq;
+        int _width = 320;
+        int _height = 170;
+        bool _event_available;
+        int _rotation;
+        TwoWire &_wire; // Add a reference to a TwoWire object
+        std::function<void(void)> userISR;
 
-    byte orientGesture(byte gestureID);
-    void IRAM_ATTR handleISR();
-    void read_touch();
-    uint8_t i2c_read(uint16_t addr, uint8_t reg_addr, uint8_t * reg_data, uint32_t length);
-    uint8_t i2c_write(uint8_t addr, uint8_t reg_addr, const uint8_t * reg_data, uint32_t length);
+        uint8_t rotateGesture(uint8_t gestureID);
+        void rotatePoint(int &x, int &y);
+        void IRAM_ATTR handleISR();
+        void read_touch();
+        uint8_t i2c_read(uint16_t addr, uint8_t reg_addr, uint8_t *reg_data, uint32_t length);
+        uint8_t i2c_write(uint8_t addr, uint8_t reg_addr, const uint8_t *reg_data, uint32_t length);
 };
 
 #endif
