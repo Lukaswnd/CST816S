@@ -130,7 +130,7 @@ void CST816S::read_touch()
 /*!
     @brief  handle interrupts
 */
-void IRAM_ATTR CST816S::handleISR(void)
+void CST816S::handleISR()
 {
     _event_available = true;
     if (userISR != nullptr)
@@ -142,7 +142,7 @@ void IRAM_ATTR CST816S::handleISR(void)
 /*!
     @brief  enable double click
 */
-void CST816S::enable_double_click(void)
+void CST816S::enable_double_click()
 {
     uint8_t enableDoubleTap = 0x01; // Set EnDClick (bit 0) to enable double-tap
     i2c_write(CST816S_ADDRESS, 0xEC, &enableDoubleTap, 1);
@@ -151,7 +151,7 @@ void CST816S::enable_double_click(void)
 /*!
     @brief  Disable auto sleep mode
 */
-void CST816S::disable_auto_sleep(void)
+void CST816S::disable_auto_sleep()
 {
     uint8_t disableAutoSleep = 0xFE; // Non-zero value disables auto sleep
     i2c_write(CST816S_ADDRESS, 0xFE, &disableAutoSleep, 1);
@@ -160,7 +160,7 @@ void CST816S::disable_auto_sleep(void)
 /*!
     @brief  Enable auto sleep mode
 */
-void CST816S::enable_auto_sleep(void)
+void CST816S::enable_auto_sleep()
 {
     uint8_t enableAutoSleep = 0x00; // 0 value enables auto sleep
     i2c_write(CST816S_ADDRESS, 0xFE, &enableAutoSleep, 1);
@@ -216,7 +216,7 @@ void CST816S::begin(int interrupt)
     @brief  Attaches a user-defined callback function to be triggered on an interrupt event from the CST816S touch controller.
     @param  callback  A function to be called when an interrupt event occurs, must have no parameters and return void.
 */
-void CST816S::attachUserInterrupt(std::function<void(void)> callback)
+void CST816S::attachUserInterrupt(std::function<void()> callback)
 {
     userISR = callback;
 }
