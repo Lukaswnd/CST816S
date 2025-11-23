@@ -64,7 +64,7 @@ class CST816S
         void disable_auto_sleep();
         void enable_auto_sleep();
         void set_auto_sleep_time(int seconds);
-        void attachUserInterrupt(std::function<void(void)> callback);
+        void attachUserInterrupt(std::function<void()> callback);
         void sleep();
         bool available();
         data_struct data;
@@ -83,7 +83,7 @@ class CST816S
         bool _event_available;
         int _rotation;
         TwoWire &_wire; // Add a reference to a TwoWire object
-        std::function<void(void)> userISR;
+        std::function<void()> userISR;
 
         uint8_t rotateGesture(uint8_t gestureID);
         void rotatePoint(int &x, int &y);
