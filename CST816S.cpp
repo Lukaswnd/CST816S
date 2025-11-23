@@ -96,14 +96,14 @@ void CST816S::rotatePoint(int &x, int &y)
     {
     case 1:
         x = oldY;
-        y = _height - 1 - oldX;
+        y = _width - 1 - oldX;
         break;
     case 2:
-        x = _height  - 1 - oldX;
-        y = _width - 1 - oldY;
+        x = _width  - 1 - oldX;
+        y = _height - 1 - oldY;
         break;
     case 3:
-        x = _width - 1 - oldY;
+        x = _height - 1 - oldY;
         y = oldX;
         break;
     default: // No rotation or unknown rotation

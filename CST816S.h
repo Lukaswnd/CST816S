@@ -78,8 +78,8 @@ class CST816S
         int _scl;
         int _rst;
         int _irq;
-        int _width = 320;
-        int _height = 170;
+        int _width = 170;
+        int _height = 320;
         bool _event_available;
         int _rotation;
         TwoWire &_wire; // Add a reference to a TwoWire object
